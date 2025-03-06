@@ -8,7 +8,7 @@ export const pensions = [
         description: 'A budget-friendly pension with clean rooms, WiFi, and breakfast included.',
         type: 'pension',
         rating: 4.0,
-        image: '/images/pensions/motel1.jpg',
+        images: ['/images/pensions/motel1.jpg', '/images/pensions/motel2.jpg', '/images/pensions/motel3.jpg', '/images/pensions/motel4.jpg'],
     },
     {
         id: '2',
@@ -19,7 +19,7 @@ export const pensions = [
         description: 'A quiet and comfortable pension with 24/7 reception and spacious rooms.',
         type: 'pension',
         rating: 4.2,
-        image: '/images/pensions/motel2.jpg',
+        images: ['/images/pensions/motel2.jpg', '/images/pensions/motel1.jpg', '/images/pensions/motel3.jpg', '/images/pensions/motel4.jpg'],
     },
     {
         id: '3',
@@ -30,7 +30,7 @@ export const pensions = [
         description: 'A small but cozy pension with a garden, great for relaxation.',
         type: 'pension',
         rating: 3.8,
-        image: '/images/pensions/motel3.jpg',
+        images: ['/images/pensions/motel3.jpg', '/images/pensions/motel2.jpg', '/images/pensions/motel1.jpg', '/images/pensions/motel4.jpg'],
     },
     {
         id: '4',
@@ -41,6 +41,6 @@ export const pensions = [
         description: 'A modern pension with great service, comfortable beds, and easy city access.',
         type: 'pension',
         rating: 4.3,
-        image: '/images/pensions/motel4.jpg',
+        images: ['/images/pensions/motel4.jpg', '/images/pensions/motel2.jpg', '/images/pensions/motel3.jpg', '/images/pensions/motel1.jpg'],
     },
 ];

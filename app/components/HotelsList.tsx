@@ -4,6 +4,11 @@ import Image from 'next/image';
 import { Star } from 'lucide-react';
 import Link from 'next/link';
 import { hotels } from '@/app/data/hotels'; // Assuming hotel data is imported
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import { Navigation, Pagination } from 'swiper/modules';
 
 export const truncateString = (str: string, maxLength: number): string => {
     return str.length > maxLength ? str.slice(0, maxLength) + '...' : str;
@@ -21,18 +26,30 @@ export default function HotelList() {
                         key={hotel.id}
                         className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition duration-300 border border-gray-300 hover:transform hover:scale-102 cursor-pointer"
                     >
-                        {/* Image Section */}
+
+                        {/* Image Carousel Section */}
                         <div className="relative">
-                            <Image
-                                src={hotel.image}
-                                alt={hotel.name}
-                                width={350}
-                                height={250}
-                                className="w-full h-56 object-cover"
-                            />
-                            <span className="absolute top-3 left-3 bg-[#2F4F4F] text-white text-sm px-3 py-1 rounded-lg">
-                                ${hotel.price} / night
-                            </span>
+                            <Swiper
+                                modules={[Navigation, Pagination]}
+                                navigation
+                                pagination={{ clickable: true }}
+                                className="w-full h-56"
+                            >
+                                {hotel.images.map((image: string, index: number) => (
+                                    <SwiperSlide key={index}>
+                                        <Image
+                                            src={image}
+                                            alt={hotel.name}
+                                            width={350}
+                                            height={250}
+                                            className="w-full h-56 object-cover"
+                                        />
+                                        <span className="absolute top-3 left-3 bg-[#2F4F4F] text-white text-sm px-3 py-1 rounded-lg">
+                                            {hotel.price} birr / night
+                                        </span>
+                                    </SwiperSlide>
+                                ))}
+                            </Swiper>
                         </div>
 
                         {/* Content Section */}

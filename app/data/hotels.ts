@@ -8,7 +8,7 @@ export const hotels = [
         description: 'A spacious and modern villa with 4 bedrooms, a balcony, and a private garden.',
         type: 'house',
         rating: 4.5,
-        image: '/images/hotels/hotel1.jpg',
+        images: ['/images/hotels/hotel1.jpg', '/images/hotels/hotel2.jpg', '/images/hotels/hotel3.jpg', '/images/hotels/hotel4.jpg'],
     },
     {
         id: '2',
@@ -19,7 +19,7 @@ export const hotels = [
         description: 'A 5-star hotel with panoramic city views, a rooftop pool, and fine dining.',
         type: 'hotel',
         rating: 5,
-        image: '/images/hotels/hotel2.jpg',
+        images: ['/images/hotels/hotel2.jpg', '/images/hotels/hotel1.jpg', '/images/hotels/hotel3.jpg', '/images/hotels/hotel4.jpg'],
     },
     {
         id: '3',
@@ -30,7 +30,7 @@ export const hotels = [
         description: 'A cozy lakeside resort with a private beach, water sports, and spa services.',
         type: 'resort',
         rating: 4.2,
-        image: '/images/hotels/hotel3.jpg',
+        images: ['/images/hotels/hotel3.jpg', '/images/hotels/hotel2.jpg', '/images/hotels/hotel1.jpg', '/images/hotels/hotel4.jpg'],
     },
     {
         id: '4',
@@ -41,6 +41,6 @@ export const hotels = [
         description: 'A peaceful retreat surrounded by nature, offering eco-friendly accommodations.',
         type: 'lodge',
         rating: 4,
-        image: '/images/hotels/hotel4.jpg',
+        images: ['/images/hotels/hotel4.jpg', '/images/hotels/hotel2.jpg', '/images/hotels/hotel3.jpg', '/images/hotels/hotel1.jpg'],
     },
 ]

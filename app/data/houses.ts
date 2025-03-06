@@ -8,7 +8,8 @@ export const houses = [
         description: 'A spacious and modern villa with 4 bedrooms, a balcony, and a private garden.',
         type: 'house',
         rating: 4,
-        image: '/images/houses/house1.jpg',
+        bedrooms: 2,
+        images: ['/images/houses/house1.jpg', '/images/houses/222.jpg', '/images/houses/333.jpg', '/images/houses/444.jpg'],
     },
     {
         id: '2',
@@ -19,7 +20,8 @@ export const houses = [
         description: 'A beautiful apartment with 2 bedrooms, city view, and great amenities.',
         type: 'house',
         rating: 5,
-        image: '/images/houses/222.jpg',
+        bedrooms: 3,
+        images: ['/images/houses/222.jpg', '/images/houses/house1.jpg', '/images/houses/333.jpg', '/images/houses/444.jpg'],
     },
     {
         id: '3',
@@ -30,7 +32,8 @@ export const houses = [
         description: 'An elegant and fully furnished condo with a balcony and stunning view.',
         type: 'house',
         rating: 3,
-        image: '/images/houses/333.jpg',
+        bedrooms: 2,
+        images: ['/images/houses/333.jpg', '/images/houses/222.jpg', '/images/houses/house1.jpg', '/images/houses/444.jpg'],
     },
     {
         id: '4',
@@ -41,6 +44,7 @@ export const houses = [
         description: 'A cozy and quiet house with 3 bedrooms, a backyard, and a garage.',
         type: 'house',
         rating: 5,
-        image: '/images/houses/444.jpg',
+        bedrooms: 3,
+        images: ['/images/houses/444.jpg', '/images/houses/222.jpg', '/images/houses/333.jpg', '/images/houses/house1.jpg'],
     },
 ];

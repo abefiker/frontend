@@ -4,32 +4,20 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Star, MapPin, Home, DollarSign } from 'lucide-react';
-import axios from 'axios';
-
-interface House {
-    _id: string;
-    name: string;
-    location: { latitude: number; longitude: number };
-    address: string;
-    price: number;
-    description: string;
-    bedrooms: number;
-    hasBalcony: boolean;
-    rating: number;
-    images: string[];
-}
+import { houses } from '@/app/data/houses';
 
 export default function HouseDetailPage({ params }: { params: { id: string } }) {
     const router = useRouter();
-    const [house, setHouse] = useState<House | null>(null);
+    const [house, setHouse] = useState(() => houses.find(h => h.id === params.id) || null);
 
     useEffect(() => {
-        if (params?.id) {
-            axios.get(`/api/houses/${params.id}`)
-                .then((response: any) => setHouse(response.data))
-                .catch(() => router.push('/not-found'));
+        const foundHouse = houses.find(h => h.id === params.id);
+        if (!foundHouse) {
+            router.push('/not-found');
+        } else {
+            setHouse(foundHouse);
         }
-    }, [params?.id, router]);
+    }, [params.id, router]);
 
     if (!house) return <div className="text-center py-20 text-gray-600">Loading...</div>;
 
@@ -64,7 +52,7 @@ export default function HouseDetailPage({ params }: { params: { id: string } }) 
 
                     <div className="mt-6 flex items-center">
                         <Home className="text-[#2F4F4F] mr-2" />
-                        <span className="text-lg text-gray-800">{house.bedrooms} Bedrooms</span>
+                        <span className="text-lg text-gray-800">{house.bedrooms || 'N/A'} Bedrooms</span>
                     </div>
 
                     <div className="mt-3 flex items-center">
@@ -76,10 +64,6 @@ export default function HouseDetailPage({ params }: { params: { id: string } }) 
                         <Star className="text-yellow-500 mr-2" />
                         <span className="text-lg font-semibold text-gray-800">{house.rating} / 5</span>
                     </div>
-
-                    {house.hasBalcony && (
-                        <p className="mt-4 text-green-600 font-medium">✔ Has Balcony</p>
-                    )}
 
                     <button className="mt-6 px-6 py-2 bg-[#2F4F4F] text-white rounded-full hover:bg-[#1c3b3b]">
                         Contact Owner
