@@ -151,8 +151,6 @@ export default function Page() {
                 </div>
 
                 <button type="submit" className="w-full bg-[#1E3D3D] hover:bg-[#183030] text-white py-2 rounded transition duration-300">Register House</button>
-
-
             </form>
         </div>
     );
