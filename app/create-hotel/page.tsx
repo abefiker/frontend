@@ -94,7 +94,7 @@ export default function Page() {
             <form onSubmit={handleSubmit} className="space-y-4">
                 {message && <p className="text-center text-lg text-green-400 mt-2">{message}</p>}
                 <input type="text" name="name" placeholder="Name" value={formData.name} onChange={handleChange} className="w-full border border-gray-300 bg-white text-gray-900 p-2 rounded focus:ring-2 focus:ring-[#1E3D3D] outline-none" required />
-                
+
                 {/* Latitude and Longitude */}
                 <div className="grid grid-cols-2 gap-2">
                     <input
@@ -118,18 +118,18 @@ export default function Page() {
                         step="any"
                     />
                 </div>
-                
+
                 <input type="text" name="address" placeholder="Address" value={formData.address} onChange={handleChange} className="w-full border border-gray-300 bg-white text-gray-900 p-2 rounded focus:ring-2 focus:ring-[#1E3D3D] outline-none" required />
                 <input type="number" name="price" placeholder="Price" value={formData.price} onChange={handleChange} className="w-full border border-gray-300 bg-white text-gray-900 p-2 rounded focus:ring-2 focus:ring-[#1E3D3D] outline-none" required />
                 <textarea name="description" placeholder="Description" value={formData.description} onChange={handleChange} className="w-full border border-gray-300 bg-white text-gray-900 p-2 rounded focus:ring-2 focus:ring-[#1E3D3D] outline-none" required />
                 <input type="number" name="bedrooms" placeholder="Bedrooms" value={formData.bedrooms} onChange={handleChange} className="w-full border border-gray-300 bg-white text-gray-900 p-2 rounded focus:ring-2 focus:ring-[#1E3D3D] outline-none" required />
-                
+
                 {/* Has Jacuzzi Checkbox */}
                 <label className="flex items-center space-x-2">
                     <input type="checkbox" name="hasJacuzzi" checked={formData.hasJacuzzi} onChange={handleChange} className="w-4 h-4 text-[#1E3D3D] border-gray-300 rounded focus:ring-[#1E3D3D]" />
                     <span>Has Jacuzzi?</span>
                 </label>
-                
+
                 {/* Stars */}
                 <label className='flex items-center space-x-2'>
                     <input
@@ -148,18 +148,18 @@ export default function Page() {
 
                 {/* Contact Information */}
                 <input type="text" name="contact" placeholder="Contact Information" value={formData.contact} onChange={handleChange} className="w-full border border-gray-300 bg-white text-gray-900 p-2 rounded focus:ring-2 focus:ring-[#1E3D3D] outline-none" required />
-                
+
                 {/* Multi-Image Upload */}
                 <MultiImageDropzone
                     value={fileStates}
                     dropzoneOptions={{ maxFiles: 6 }}
                     onChange={async (files) => { await handleFileUpload(files) }}
                 />
-                
+
                 {/* Display Uploaded Photos */}
                 <div className="grid grid-cols-3 gap-2 mt-2">
                     {uploadedUrls.map((photo, index) => (
-                        <img key={index} src={photo} alt={`Upload preview ${index + 1}`} className="w-20 h-20 object-cover rounded" />
+                        <img key={index} width={200} height={200} src={photo} alt={`Upload preview ${index + 1}`} className="w-20 h-20 object-cover rounded" />
                     ))}
                 </div>
 

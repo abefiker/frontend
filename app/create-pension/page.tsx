@@ -1,5 +1,7 @@
 'use client';
 import { useState } from 'react';
+import { MultiImageDropzone } from '@/app/components/MultiImageDropzone';
+import { useImageUploader } from '@/app/hooks/useImageUploader';
 
 export default function PensionRegister() {
     const [formData, setFormData] = useState<{
@@ -14,6 +16,8 @@ export default function PensionRegister() {
         hasParking: boolean;
         petFriendly: boolean;
         photos: string[];
+        customerRating: number;
+        contact: string;
     }>({
         name: "",
         location: { latitude: '', longitude: '' },
@@ -23,30 +27,12 @@ export default function PensionRegister() {
         hasParking: false,
         petFriendly: false,
         photos: [],
+        customerRating: 0,
+        contact: '',
     });
 
     const [message, setMessage] = useState("");
-
-    // Handle file uploads
-    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-        e.preventDefault();
-        const files = e.target.files;
-        if (!files) return;
-
-        const uploadedPhotos = Array.from(files).map((file) => URL.createObjectURL(file));
-
-        // Limit to 5 photos
-        if (formData.photos.length + uploadedPhotos.length > 5) {
-            setMessage("You can upload up to 5 photos only.");
-            return;
-        }
-
-        setFormData((prev) => ({
-            ...prev,
-            photos: [...prev.photos, ...uploadedPhotos],
-        }));
-    };
-
+    const { fileStates, handleFileUpload, uploadedUrls } = useImageUploader();
     // Handle input changes
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value, type } = e.target;
@@ -92,6 +78,8 @@ export default function PensionRegister() {
                     hasParking: false,
                     petFriendly: false,
                     photos: [],
+                    customerRating: 0,
+                    contact: ''
                 });
             } else {
                 setMessage("Something went wrong");
@@ -142,10 +130,18 @@ export default function PensionRegister() {
                     <input type="checkbox" name="petFriendly" checked={formData.petFriendly} onChange={handleChange} className="w-4 h-4 text-[#1E3D3D] border-gray-300 rounded focus:ring-[#1E3D3D]" />
                     <span>Pet Friendly?</span>
                 </label>
+                {/* Customer Rating */}
+                <input type="number" name="customerRating" placeholder="Customer Rating" value={formData.customerRating} onChange={handleChange} className="w-full border border-gray-300 bg-white text-gray-900 p-2 rounded focus:ring-2 focus:ring-[#1E3D3D] outline-none" required />
 
-                {/* Photo Upload */}
-                <input type="file" name="photos" multiple accept="image/*" onChange={handleFileUpload} className="w-full border border-gray-300 bg-white text-gray-900 p-2 rounded focus:ring-2 focus:ring-[#1E3D3D] outline-none" />
-                <p className="text-sm text-gray-700">You can upload up to 5 photos.</p>
+                {/* Contact Information */}
+                <input type="text" name="contact" placeholder="Contact Information" value={formData.contact} onChange={handleChange} className="w-full border border-gray-300 bg-white text-gray-900 p-2 rounded focus:ring-2 focus:ring-[#1E3D3D] outline-none" required />
+
+                {/* Multi-Image Upload */}
+                <MultiImageDropzone
+                    value={fileStates}
+                    dropzoneOptions={{ maxFiles: 6 }}
+                    onChange={async (files) => { await handleFileUpload(files) }}
+                />
 
                 {/* Display Uploaded Photos */}
                 <div className="grid grid-cols-3 gap-2 mt-2">

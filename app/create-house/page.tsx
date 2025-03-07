@@ -1,5 +1,7 @@
 'use client'
 import { useState } from 'react';
+import { MultiImageDropzone } from '@/app/components/MultiImageDropzone';
+import { useImageUploader } from '@/app/hooks/useImageUploader';
 
 export default function Page() {
     const [formData, setFormData] = useState<{
@@ -14,6 +16,8 @@ export default function Page() {
         bedrooms: string;
         hasBalcony: boolean;
         photos: string[];
+        customerRating: number;
+        contact: string;
     }>({
         name: "",
         location: { latitude: '', longitude: '' },
@@ -23,29 +27,13 @@ export default function Page() {
         bedrooms: "",
         hasBalcony: false,
         photos: [],
+        customerRating: 0,
+        contact: "",
     });
 
     const [message, setMessage] = useState("");
+    const { fileStates, handleFileUpload, uploadedUrls } = useImageUploader();
 
-    // Handle file uploads
-    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-        e.preventDefault();
-        const files = e.target.files;
-        if (!files) return;
-
-        const uploadedPhotos = Array.from(files).map((file) => URL.createObjectURL(file));
-
-        // Limit to 5 photos
-        if (formData.photos.length + uploadedPhotos.length > 5) {
-            setMessage("You can upload up to 5 photos only.");
-            return;
-        }
-
-        setFormData((prev) => ({
-            ...prev,
-            photos: [...prev.photos, ...uploadedPhotos],
-        }));
-    };
 
     // Handle input changes
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -76,7 +64,7 @@ export default function Page() {
             const response = await fetch('http://localhost:8001/api/v1/stays/houses', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData),
+                body: JSON.stringify({ ...formData, photos: uploadedUrls }),
             });
             const result = await response.json();
 
@@ -91,6 +79,8 @@ export default function Page() {
                     bedrooms: "",
                     hasBalcony: false,
                     photos: [],
+                    customerRating: 0,
+                    contact: "",
                 });
             } else {
                 console.error('Something went wrong');
@@ -138,15 +128,23 @@ export default function Page() {
                     <input type="checkbox" name="hasBalcony" checked={formData.hasBalcony} onChange={handleChange} className="w-4 h-4 text-[#1E3D3D] border-gray-300 rounded focus:ring-[#1E3D3D]" />
                     <span>Has Balcony?</span>
                 </label>
+                {/* Customer Rating */}
+                <input type="number" name="customerRating" placeholder="Customer Rating" value={formData.customerRating} onChange={handleChange} className="w-full border border-gray-300 bg-white text-gray-900 p-2 rounded focus:ring-2 focus:ring-[#1E3D3D] outline-none" required />
 
-                {/* Photo Upload */}
-                <input type="file" name="photos" multiple accept="image/*" onChange={handleFileUpload} className="w-full border border-gray-300 bg-white text-gray-900 p-2 rounded focus:ring-2 focus:ring-[#1E3D3D] outline-none" />
-                <p className="text-sm text-gray-700">You can upload up to 5 photos.</p>
+                {/* Contact Information */}
+                <input type="text" name="contact" placeholder="Contact Information" value={formData.contact} onChange={handleChange} className="w-full border border-gray-300 bg-white text-gray-900 p-2 rounded focus:ring-2 focus:ring-[#1E3D3D] outline-none" required />
+
+                {/* Multi-Image Upload */}
+                <MultiImageDropzone
+                    value={fileStates}
+                    dropzoneOptions={{ maxFiles: 6 }}
+                    onChange={async (files) => { await handleFileUpload(files) }}
+                />
 
                 {/* Display Uploaded Photos */}
                 <div className="grid grid-cols-3 gap-2 mt-2">
-                    {formData.photos.map((photo, index) => (
-                        <img key={index} src={photo} alt={`Upload preview ${index + 1}`} className="w-20 h-20 object-cover rounded" />
+                    {uploadedUrls.map((photo, index) => (
+                        <img key={index} width={200} height={200} src={photo} alt={`Upload preview ${index + 1}`} className="w-20 h-20 object-cover rounded" />
                     ))}
                 </div>
 
