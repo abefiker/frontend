@@ -2,20 +2,20 @@
 import { useState } from 'react';
 import { MultiImageDropzone } from '@/app/components/MultiImageDropzone';
 import { useImageUploader } from '@/app/hooks/useImageUploader';
+
 export default function Page() {
     const [formData, setFormData] = useState<{
         name: string;
-        location: {
-            latitude: string,
-            longitude: string,
-        };
+        location: { latitude: string; longitude: string };
         address: string;
         price: string;
         description: string;
         bedrooms: string;
         hasJacuzzi: boolean;
         photos: string[];
-        stars: number
+        stars: number;
+        customerRating: number;
+        contact: string;
     }>({
         name: "",
         location: { latitude: '', longitude: '' },
@@ -26,31 +26,13 @@ export default function Page() {
         hasJacuzzi: false,
         stars: 0,
         photos: [],
+        customerRating: 0,
+        contact: ""
     });
 
     const [message, setMessage] = useState("");
     const { fileStates, handleFileUpload, uploadedUrls } = useImageUploader();
-    // Handle file uploads
-    // const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     e.preventDefault();
-    //     const files = e.target.files;
-    //     if (!files) return;
 
-    //     const uploadedPhotos = Array.from(files).map((file) => URL.createObjectURL(file));
-
-    //     // Limit to 5 photos
-    //     if (formData.photos.length + uploadedPhotos.length > 5) {
-    //         setMessage("You can upload up to 5 photos only.");
-    //         return;
-    //     }
-
-    //     setFormData((prev) => ({
-    //         ...prev,
-    //         photos: [...prev.photos, ...uploadedPhotos],
-    //     }));
-    // };
-
-    // Handle input changes
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value, type } = e.target;
         const target = e.target as HTMLInputElement;
@@ -60,7 +42,7 @@ export default function Page() {
             [name]: type === "checkbox" ? target.checked : value,
         }));
     };
-    // Handle location inputs separately
+
     const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
@@ -72,7 +54,6 @@ export default function Page() {
         }));
     };
 
-    // Handle form submission
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
@@ -95,6 +76,8 @@ export default function Page() {
                     hasJacuzzi: false,
                     stars: 0,
                     photos: [],
+                    customerRating: 0,
+                    contact: ""
                 });
             } else {
                 console.error('Something went wrong');
@@ -111,6 +94,8 @@ export default function Page() {
             <form onSubmit={handleSubmit} className="space-y-4">
                 {message && <p className="text-center text-lg text-green-400 mt-2">{message}</p>}
                 <input type="text" name="name" placeholder="Name" value={formData.name} onChange={handleChange} className="w-full border border-gray-300 bg-white text-gray-900 p-2 rounded focus:ring-2 focus:ring-[#1E3D3D] outline-none" required />
+                
+                {/* Latitude and Longitude */}
                 <div className="grid grid-cols-2 gap-2">
                     <input
                         type="number"
@@ -133,19 +118,23 @@ export default function Page() {
                         step="any"
                     />
                 </div>
+                
                 <input type="text" name="address" placeholder="Address" value={formData.address} onChange={handleChange} className="w-full border border-gray-300 bg-white text-gray-900 p-2 rounded focus:ring-2 focus:ring-[#1E3D3D] outline-none" required />
                 <input type="number" name="price" placeholder="Price" value={formData.price} onChange={handleChange} className="w-full border border-gray-300 bg-white text-gray-900 p-2 rounded focus:ring-2 focus:ring-[#1E3D3D] outline-none" required />
                 <textarea name="description" placeholder="Description" value={formData.description} onChange={handleChange} className="w-full border border-gray-300 bg-white text-gray-900 p-2 rounded focus:ring-2 focus:ring-[#1E3D3D] outline-none" required />
                 <input type="number" name="bedrooms" placeholder="Bedrooms" value={formData.bedrooms} onChange={handleChange} className="w-full border border-gray-300 bg-white text-gray-900 p-2 rounded focus:ring-2 focus:ring-[#1E3D3D] outline-none" required />
-
+                
+                {/* Has Jacuzzi Checkbox */}
                 <label className="flex items-center space-x-2">
-                    <input type="checkbox" name="hasBalcony" checked={formData.hasJacuzzi} onChange={handleChange} className="w-4 h-4 text-[#1E3D3D] border-gray-300 rounded focus:ring-[#1E3D3D]" />
+                    <input type="checkbox" name="hasJacuzzi" checked={formData.hasJacuzzi} onChange={handleChange} className="w-4 h-4 text-[#1E3D3D] border-gray-300 rounded focus:ring-[#1E3D3D]" />
                     <span>Has Jacuzzi?</span>
                 </label>
+                
+                {/* Stars */}
                 <label className='flex items-center space-x-2'>
                     <input
                         type="number"
-                        name="stars"  // Fix this typo from "starts" to "stars"
+                        name="stars"
                         placeholder="Stars (Rating)"
                         value={formData.stars}
                         onChange={handleChange}
@@ -153,22 +142,23 @@ export default function Page() {
                         required
                     />
                 </label>
+
+                {/* Customer Rating */}
+                <input type="number" name="customerRating" placeholder="Customer Rating" value={formData.customerRating} onChange={handleChange} className="w-full border border-gray-300 bg-white text-gray-900 p-2 rounded focus:ring-2 focus:ring-[#1E3D3D] outline-none" required />
+
+                {/* Contact Information */}
+                <input type="text" name="contact" placeholder="Contact Information" value={formData.contact} onChange={handleChange} className="w-full border border-gray-300 bg-white text-gray-900 p-2 rounded focus:ring-2 focus:ring-[#1E3D3D] outline-none" required />
+                
                 {/* Multi-Image Upload */}
                 <MultiImageDropzone
                     value={fileStates}
                     dropzoneOptions={{ maxFiles: 6 }}
                     onChange={async (files) => { await handleFileUpload(files) }}
                 />
-
+                
                 {/* Display Uploaded Photos */}
                 <div className="grid grid-cols-3 gap-2 mt-2">
                     {uploadedUrls.map((photo, index) => (
-                        <img key={index} src={photo} alt={`Upload preview ${index + 1}`} className="w-20 h-20 object-cover rounded" />
-                    ))}
-                </div>
-                {/* Display Uploaded Photos */}
-                <div className="grid grid-cols-3 gap-2 mt-2">
-                    {formData.photos.map((photo, index) => (
                         <img key={index} src={photo} alt={`Upload preview ${index + 1}`} className="w-20 h-20 object-cover rounded" />
                     ))}
                 </div>
