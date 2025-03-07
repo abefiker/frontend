@@ -63,7 +63,7 @@ export default function PensionRegister() {
             const response = await fetch('http://localhost:8001/api/v1/stays/pensions', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData),
+                body: JSON.stringify({ ...formData, photos: uploadedUrls }),
             });
             const result = await response.json();
 
