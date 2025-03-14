@@ -26,18 +26,18 @@ export function useImageUploader() {
     const uploadedImages = await Promise.all(
       addedFiles.map(async (fileState) => {
         try {
-            const res = await edgestore.myPublicImages.upload({ // Use the correct bucket name
-                file: fileState.file,
-                onProgressChange: async (progress:number) => {
-                  updateFileProgress(fileState.key, progress);
-                  if (progress === 100) {
-                    await new Promise((resolve) => setTimeout(resolve, 1000));
-                    updateFileProgress(fileState.key, 'COMPLETE');
-                  }
-                },
-              });              
+          const res = await edgestore.myPublicImages.upload({
+            file: fileState.file,
+            onProgressChange: async (progress: number) => {
+              updateFileProgress(fileState.key, progress);
+              if (progress === 100) {
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+                updateFileProgress(fileState.key, 'COMPLETE');
+              }
+            },
+          });
 
-          return res.url; // Assuming `res.url` contains the uploaded file URL
+          return res.url;
         } catch (err) {
           updateFileProgress(fileState.key, 'ERROR');
           return null;
@@ -48,8 +48,7 @@ export function useImageUploader() {
     // Filter out null values (failed uploads)
     const validUrls = uploadedImages.filter((url): url is string => url !== null);
     setUploadedUrls((prev) => [...prev, ...validUrls]);
-    return validUrls;
+    // No need to return anything here
   }
-
   return { fileStates, handleFileUpload, uploadedUrls };
 }

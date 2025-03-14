@@ -2,32 +2,58 @@
 import { useState } from 'react';
 import { MultiImageDropzone } from '@/app/components/MultiImageDropzone';
 import { useImageUploader } from '@/app/hooks/useImageUploader';
+// Assuming you have this hook
 
 export default function Page() {
     const [formData, setFormData] = useState<{
         name: string;
-        location: { latitude: string; longitude: string };
         address: string;
-        price: string;
+        location: {
+            latitude: string;
+            longitude: string;
+        };
         description: string;
-        bedrooms: string;
-        hasJacuzzi: boolean;
-        photos: string[];
+        bedrooms: number;
         stars: number;
+        price: number;
         customerRating: number;
+        photos: string[];
         contact: string;
+        amenities?: string[];
+        services?: string[];
+        policies?: string;
+        reviews?: {
+            reviewer: string;
+            rating: number;
+            comment: string;
+        }[];
+        availableRooms: number;
+        petFriendly?: boolean;
+        parkingAvailable?: boolean;
+        restaurant?: boolean;
+        checkInTime?: string;
+        checkOutTime?: string;
     }>({
         name: "",
         location: { latitude: '', longitude: '' },
         address: "",
-        price: "",
+        price: 0,
         description: "",
-        bedrooms: "",
-        hasJacuzzi: false,
+        bedrooms: 0,
         stars: 0,
         photos: [],
         customerRating: 0,
-        contact: ""
+        contact: "",
+        amenities: [],
+        services: [],
+        policies: "",
+        reviews: [],
+        availableRooms: 0,
+        petFriendly: false,
+        parkingAvailable: false,
+        restaurant: false,
+        checkInTime: "",
+        checkOutTime: "",
     });
 
     const [message, setMessage] = useState("");
@@ -57,7 +83,7 @@ export default function Page() {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            const response = await fetch('http://localhost:8001/api/v1/stays/hotels', {
+            const response = await fetch('/api/createHotel', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ...formData, photos: uploadedUrls }),
@@ -70,14 +96,23 @@ export default function Page() {
                     name: "",
                     location: { latitude: '', longitude: '' },
                     address: "",
-                    price: "",
+                    price: 0,
                     description: "",
-                    bedrooms: "",
-                    hasJacuzzi: false,
+                    bedrooms: 0,
                     stars: 0,
                     photos: [],
                     customerRating: 0,
-                    contact: ""
+                    contact: "",
+                    amenities: [],
+                    services: [],
+                    policies: "",
+                    reviews: [],
+                    availableRooms: 0,
+                    petFriendly: false,
+                    parkingAvailable: false,
+                    restaurant: false,
+                    checkInTime: "",
+                    checkOutTime: "",
                 });
             } else {
                 console.error('Something went wrong');
@@ -92,63 +127,224 @@ export default function Page() {
         <div className="max-w-lg mx-auto bg-gray-300 text-white p-6 rounded-lg shadow-lg">
             <h2 className="text-2xl font-semibold text-[#2F4F4F] text-center mb-4">Register a Hotel</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
-                {message && <p className="text-center text-lg text-green-400 mt-2">{message}</p>}
-                <input type="text" name="name" placeholder="Name" value={formData.name} onChange={handleChange} className="w-full border border-gray-300 bg-white text-gray-900 p-2 rounded focus:ring-2 focus:ring-[#1E3D3D] outline-none" required />
+                {message && <p className="text-center text-green-600 mt-4">{message}</p>}
+                <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <label htmlFor="name" className="block text-sm font-semibold text-gray-700">Hotel Name</label>
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
+                            required
+                            className="mt-2 p-3 border border-gray-700 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="address" className="block text-sm font-semibold text-gray-700">Address</label>
+                        <input
+                            type="text"
+                            id="address"
+                            name="address"
+                            value={formData.address}
+                            onChange={handleChange}
+                            required
+                            className="mt-2 p-3 border border-gray-700 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        />
+                    </div>
+                </div>
 
-                {/* Latitude and Longitude */}
-                <div className="grid grid-cols-2 gap-2">
-                    <input
-                        type="number"
-                        name="latitude"
-                        placeholder="Latitude"
-                        value={formData.location.latitude}
-                        onChange={handleLocationChange}
-                        className="w-full border border-gray-300 bg-white text-gray-900 p-2 rounded focus:ring-2 focus:ring-[#1E3D3D] outline-none"
+                <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <label htmlFor="latitude" className="block text-sm font-semibold text-gray-700">Latitude</label>
+                        <input
+                            type="text"
+                            id="latitude"
+                            name="latitude"
+                            value={formData.location.latitude}
+                            onChange={handleLocationChange}
+                            required
+                            className="mt-2 p-3 border border-gray-700 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="longitude" className="block text-sm font-semibold text-gray-700">Longitude</label>
+                        <input
+                            type="text"
+                            id="longitude"
+                            name="longitude"
+                            value={formData.location.longitude}
+                            onChange={handleLocationChange}
+                            required
+                            className="mt-2 p-3 border border-gray-700 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        />
+                    </div>
+                </div>
+
+                <div>
+                    <label htmlFor="description" className="block text-sm font-semibold text-gray-700">Description</label>
+                    <textarea
+                        id="description"
+                        name="description"
+                        value={formData.description}
+                        onChange={handleChange}
+                        rows={4}
                         required
-                        step="any"
-                    />
-                    <input
-                        type="number"
-                        name="longitude"
-                        placeholder="Longitude"
-                        value={formData.location.longitude}
-                        onChange={handleLocationChange}
-                        className="w-full border border-gray-300 bg-white text-gray-900 p-2 rounded focus:ring-2 focus:ring-[#1E3D3D] outline-none"
-                        required
-                        step="any"
+                        className="mt-2 p-3 border border-gray-700 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
                     />
                 </div>
 
-                <input type="text" name="address" placeholder="Address" value={formData.address} onChange={handleChange} className="w-full border border-gray-300 bg-white text-gray-900 p-2 rounded focus:ring-2 focus:ring-[#1E3D3D] outline-none" required />
-                <input type="number" name="price" placeholder="Price" value={formData.price} onChange={handleChange} className="w-full border border-gray-300 bg-white text-gray-900 p-2 rounded focus:ring-2 focus:ring-[#1E3D3D] outline-none" required />
-                <textarea name="description" placeholder="Description" value={formData.description} onChange={handleChange} className="w-full border border-gray-300 bg-white text-gray-900 p-2 rounded focus:ring-2 focus:ring-[#1E3D3D] outline-none" required />
-                <input type="number" name="bedrooms" placeholder="Bedrooms" value={formData.bedrooms} onChange={handleChange} className="w-full border border-gray-300 bg-white text-gray-900 p-2 rounded focus:ring-2 focus:ring-[#1E3D3D] outline-none" required />
+                <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <label htmlFor="bedrooms" className="block text-sm font-semibold text-gray-700">Bedrooms</label>
+                        <input
+                            type="number"
+                            id="bedrooms"
+                            name="bedrooms"
+                            value={formData.bedrooms}
+                            onChange={handleChange}
+                            required
+                            className="mt-2 p-3 border border-gray-700 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="stars" className="block text-sm font-semibold text-gray-700">Stars</label>
+                        <input
+                            type="number"
+                            id="stars"
+                            name="stars"
+                            value={formData.stars}
+                            onChange={handleChange}
+                            required
+                            className="mt-2 p-3 border border-gray-700 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        />
+                    </div>
+                </div>
 
-                {/* Has Jacuzzi Checkbox */}
-                <label className="flex items-center space-x-2">
-                    <input type="checkbox" name="hasJacuzzi" checked={formData.hasJacuzzi} onChange={handleChange} className="w-4 h-4 text-[#1E3D3D] border-gray-300 rounded focus:ring-[#1E3D3D]" />
-                    <span>Has Jacuzzi?</span>
-                </label>
-
-                {/* Stars */}
-                <label className='flex items-center space-x-2'>
+                <div>
+                    <label htmlFor="price" className="block text-sm font-semibold text-gray-700">Price</label>
                     <input
                         type="number"
-                        name="stars"
-                        placeholder="Stars (Rating)"
-                        value={formData.stars}
+                        id="price"
+                        name="price"
+                        value={formData.price}
                         onChange={handleChange}
-                        className="w-full border border-gray-300 bg-white text-gray-900 p-2 rounded focus:ring-2 focus:ring-[#1E3D3D] outline-none"
                         required
+                        className="mt-2 p-3 border border-gray-700 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
                     />
-                </label>
+                </div>
 
-                {/* Customer Rating */}
-                <input type="number" name="customerRating" placeholder="Customer Rating" value={formData.customerRating} onChange={handleChange} className="w-full border border-gray-300 bg-white text-gray-900 p-2 rounded focus:ring-2 focus:ring-[#1E3D3D] outline-none" required />
+                <div>
+                    <label htmlFor="contact" className="block text-sm font-semibold text-gray-700">Contact Information</label>
+                    <input
+                        type="text"
+                        id="contact"
+                        name="contact"
+                        value={formData.contact}
+                        onChange={handleChange}
+                        required
+                        className="mt-2 p-3 border border-gray-700 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    />
+                </div>
 
-                {/* Contact Information */}
-                <input type="text" name="contact" placeholder="Contact Information" value={formData.contact} onChange={handleChange} className="w-full border border-gray-300 bg-white text-gray-900 p-2 rounded focus:ring-2 focus:ring-[#1E3D3D] outline-none" required />
+                <div>
+                    <label htmlFor="amenities" className="block text-sm font-semibold text-gray-700">Amenities</label>
+                    <input
+                        type="text"
+                        id="amenities"
+                        name="amenities"
+                        value={formData.amenities}
+                        onChange={handleChange}
+                        className="mt-2 p-3 border border-gray-700 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    />
+                </div>
 
+                <div>
+                    <label htmlFor="services" className="block text-sm font-semibold text-gray-700">Services</label>
+                    <input
+                        type="text"
+                        id="services"
+                        name="services"
+                        value={formData.services}                        onChange={handleChange}
+                        className="mt-2 p-3 border border-gray-700 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    />
+                </div>
+
+                <div>
+                    <label htmlFor="policies" className="block text-sm font-semibold text-gray-700">Policies</label>
+                    <textarea
+                        id="policies"
+                        name="policies"
+                        value={formData.policies}
+                        onChange={handleChange}
+                        rows={3}
+                        className="mt-2 p-3 border border-gray-700 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    />
+                </div>
+
+                <div className="flex items-center space-x-4">
+                    <div>
+                        <input
+                            type="checkbox"
+                            id="petFriendly"
+                            name="petFriendly"
+                            checked={formData.petFriendly}
+                            onChange={handleChange}
+                            className="form-checkbox"
+                        />
+                        <label htmlFor="petFriendly" className="text-sm text-gray-700">Pet Friendly</label>
+                    </div>
+
+                    <div>
+                        <input
+                            type="checkbox"
+                            id="parkingAvailable"
+                            name="parkingAvailable"
+                            checked={formData.parkingAvailable}
+                            onChange={handleChange}
+                            className="form-checkbox"
+                        />
+                        <label htmlFor="parkingAvailable" className="text-sm text-gray-700">Parking Available</label>
+                    </div>
+
+                    <div>
+                        <input
+                            type="checkbox"
+                            id="restaurant"
+                            name="restaurant"
+                            checked={formData.restaurant}
+                            onChange={handleChange}
+                            className="form-checkbox"
+                        />
+                        <label htmlFor="restaurant" className="text-sm text-gray-700">Restaurant</label>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <label htmlFor="checkInTime" className="block text-sm font-semibold text-gray-700">Check-in Time</label>
+                        <input
+                            type="time"
+                            id="checkInTime"
+                            name="checkInTime"
+                            value={formData.checkInTime}
+                            onChange={handleChange}
+                            className="mt-2 p-3 border border-gray-700 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="checkOutTime" className="block text-sm font-semibold text-gray-700">Check-out Time</label>
+                        <input
+                            type="time"
+                            id="checkOutTime"
+                            name="checkOutTime"
+                            value={formData.checkOutTime}
+                            onChange={handleChange}
+                            className="mt-2 p-3 border border-gray-700 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        />
+                    </div>
+                </div>
                 {/* Multi-Image Upload */}
                 <MultiImageDropzone
                     value={fileStates}
@@ -163,7 +359,8 @@ export default function Page() {
                     ))}
                 </div>
 
-                <button type="submit" className="w-full bg-[#1E3D3D] hover:bg-[#183030] text-white py-2 rounded transition duration-300">Register Hotel</button>
+                <button type="submit" className="w-full bg-[#1E3D3D] hover:bg-[#183030] text-white py-2 rounded transition duration-300 cursor-pointer">Register Hotel</button>
+
             </form>
         </div>
     );

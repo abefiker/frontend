@@ -30,6 +30,12 @@ interface House {
         email: string;
         website: string;
     };
+    hasBalcony: boolean;
+    houseType: 'Apartment' | 'Villa' | 'Condo' | 'Townhouse',
+    furnished: boolean,
+    rentType: 'Monthly' | 'Yearly' | 'Half_Year' | 'Quarter_Year',
+    garageAvailable: boolean;
+    gardenYard: boolean;
 }
 export default function HouseList() {
     const [houses, setHouses] = useState<House[]>([])
@@ -38,10 +44,11 @@ export default function HouseList() {
     useEffect(() => {
         const fetchHotels = async () => {
             try {
-                const response = await fetch('http://localhost:8001/api/v1/stays/houses');
-                if (!response.ok) throw new Error('Failed to fetch hotels');
+                const response = await fetch('/api/displayHouse');
+                if (response.status !== 200) throw new Error('Failed to fetch hotels');
+                console.log(response)
                 const data = await response.json();
-                setHouses(data);
+                setHouses(data.data);
             } catch (error) {
                 setError('Error fetching hotels');
             } finally {
@@ -74,7 +81,7 @@ export default function HouseList() {
                             >
                                 {house.photos.map((photo: string, index: number) => (
                                     <SwiperSlide key={`${house._id}-${index}`}>
-                                        <Image
+                                        <img
                                             src={photo}
                                             alt={house.name}
                                             width={350}

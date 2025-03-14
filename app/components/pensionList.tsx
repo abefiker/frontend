@@ -16,21 +16,26 @@ export const truncateString = (str: string, maxLength: number): string => {
 interface Pension {
     _id: string;
     name: string;
+    location: { latitude: string; longitude: string };
     address: string;
-    location: {
-        latitude: string;
-        longitude: string;
-    };
-    description: string;
-    bedrooms: string;
     price: number;
-    customerRating: number;
+    description: string;
+    roomsAvailable: number;
+    amenities: string[];
+    hasBalcony: boolean;
     photos: string[];
-    contact: {
-        phone: string;
-        email: string;
-        website: string;
-    };
+    customerRating: number;
+    contact: { phone: string; email: string; website?: string };
+    pensionType: 'Guesthouse' | 'Retirement' | 'Boutique' | 'Budget';
+    furnished: boolean;
+    rentType: 'Daily' | 'Weekly' | 'Monthly';
+    parkingAvailable: boolean;
+    diningFacilities: boolean;
+    petFriendly: boolean;
+    wifiAvailable: boolean;
+    wheelchairAccessible: boolean;
+    checkInTime: string;
+    checkOutTime: string;
 }
 
 export default function PensionList() {
@@ -41,14 +46,13 @@ export default function PensionList() {
     useEffect(() => {
         const fetchHotels = async () => {
             try {
-                const response = await fetch('http://localhost:8001/api/v1/stays/pensions');
-
+                const response = await fetch('/api/displayPension');
                 if (!response.ok) throw new Error('Failed to fetch hotels');
                 const data = await response.json();
-                console.log(data)
+                console.log(data.data)
                 // Ensure data is not undefined and has the 'data' field
-                if (data && Array.isArray(data)) {
-                    setPensions(data);
+                if (data && Array.isArray(data.data)) {
+                    setPensions(data.data);
                 } else {
                     setError('Unexpected data format');
                 }
@@ -86,13 +90,13 @@ export default function PensionList() {
                             >
                                 {pension.photos.map((photo: string, index: number) => (
                                     <SwiperSlide key={index}>
-                                        <Image
+                                        <img
                                             src={photo}
                                             alt={pension.name}
                                             width={350}
                                             height={250}
                                             className="w-full h-56 object-cover"
-                                            priority={index === 0} // Priority load the first image
+                                            // priority={index === 0} // Priority load the first image
                                         />
                                         <span className="absolute top-3 left-3 bg-[#2F4F4F] text-white text-sm px-3 py-1 rounded-lg">
                                             {pension.price} birr / night

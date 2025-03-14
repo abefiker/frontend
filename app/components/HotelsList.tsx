@@ -1,6 +1,6 @@
 'use client';
 
-import Image from 'next/image';
+
 import { Star } from 'lucide-react';
 import Link from 'next/link';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -23,7 +23,7 @@ interface Hotel {
         longitude: string;
     };
     description: string;
-    bedrooms: string;
+    bedrooms: number;
     stars: number;
     price: number;
     customerRating: number;
@@ -31,8 +31,22 @@ interface Hotel {
     contact: {
         phone: string;
         email: string;
-        website: string;
+        website?: string;
     };
+    amenities?: string[];
+    services?: string[];
+    policies?: string;
+    reviews?: {
+        reviewer: string;
+        rating: number;
+        comment: string;
+    }[];
+    availableRooms: number;
+    petFriendly?: boolean;
+    parkingAvailable?: boolean;
+    restaurant?: boolean;
+    checkInTime?: string;
+    checkOutTime?: string;
 }
 
 export default function HotelList() {
@@ -43,10 +57,10 @@ export default function HotelList() {
     useEffect(() => {
         const fetchHotels = async () => {
             try {
-                const response = await fetch('http://localhost:8001/api/v1/stays/hotels');
+                const response = await fetch('/api/displayHotel');
                 if (!response.ok) throw new Error('Failed to fetch hotels');
                 const data = await response.json();
-                setHotels(data);
+                setHotels(data.data);
             } catch (error) {
                 setError('Error fetching hotels');
             } finally {
@@ -80,12 +94,13 @@ export default function HotelList() {
                             >
                                 {hotel.photos.map((photo: string, index: number) => (
                                     <SwiperSlide key={`${hotel._id}-${index}`}>
-                                        <Image
+                                        <img
                                             src={photo}
                                             alt={hotel.name}
                                             width={350}
                                             height={250}
                                             className="w-full h-56 object-cover"
+                                            
                                         />
                                         <span className="absolute top-3 left-3 bg-[#2F4F4F] text-white text-sm px-3 py-1 rounded-lg">
                                             {hotel.price} birr / night
